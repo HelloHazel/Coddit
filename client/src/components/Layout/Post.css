@@ -1,0 +1,13 @@
+.flex-container.stretch {
+  align-items: stretch;
+  height: 80px;
+}
+.flex-container.baseline {
+  align-items: baseline;
+}
+
+.flex-item {
+  width: 50px;
+  margin: 5px;
+  text-align: center;
+}
