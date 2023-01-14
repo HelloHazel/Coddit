@@ -28,6 +28,8 @@ router.get("/post", (req, res) => {
   });
 });
 
-router.get("/wirte", (req, res) => {});
+router.get("/wirte", (req, res) => {
+  var postid = 0;
+});
 
 module.exports = router;
