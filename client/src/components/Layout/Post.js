@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./Post.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "../../store/store";
 import PostContent from "../views/UtilPage/PostContent";
 import TimeAgo from "timeago-react";
 export default function Post(props) {
   const dispatch = useDispatch();
+
+  const sub_list = useSelector((state) => state.subSlice.list);
 
   const post_list = useSelector((state) => state.postSlice.list);
   useEffect(() => {
@@ -22,13 +23,17 @@ export default function Post(props) {
           >
             {/* <PostContent /> */}
             <div className=" flex mb-1">
-              <h5 className=" text-sm mb-1">커뮤니티 이름</h5>{" "}
+              {sub_list.map((sub, j) => {
+                if (item.sub_id === sub.sub_id) {
+                  return <h5 key={j}>{sub.sub_name}</h5>;
+                }
+              })}
               <p className="text-reddit_text text-sm ">
                 • Posted by u/{item.user_name}{" "}
                 <TimeAgo datetime={item.post_date} />
               </p>
             </div>
-            <h2 className="text-xl mb-3"> 포스트 제목</h2>
+            <h2 className="text-xl mb-3"> {item.post_title}</h2>
             <div className="text-sm leading-6 text-gray-700">
               <p>{item.post_content}</p>
             </div>

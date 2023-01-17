@@ -5,6 +5,23 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const userSlice = createSlice({
+  name: "userSlice",
+  initialState: {
+    userName: "",
+  },
+  reducers: {
+    setUser: (state, action) => {
+      state.userName = action.payload;
+      console.log(action.payload);
+    },
+    LogoutUser: (state) => {
+      state.userName = "";
+    },
+  },
+  extraReducers: {},
+});
+
 const asyncTopic = createAsyncThunk("communitySlice/asyncTopic", async () => {
   const resp = await axios.get("/api/topic");
   return resp.data;
@@ -82,7 +99,8 @@ export default configureStore({
     topicSlice: topicSlice.reducer,
     subSlice: subSlice.reducer,
     postSlice: postSlice.reducer,
+    userSlice: userSlice.reducer,
   },
 });
 
-export { asyncTopic, asyncSub, getPost };
+export { asyncTopic, asyncSub, getPost, postSlice, userSlice };

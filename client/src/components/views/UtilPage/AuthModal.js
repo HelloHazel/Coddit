@@ -5,9 +5,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthModalContext from "./AuthModalContext";
 import ClickOutHandler from "react-clickout-handler";
+import UserContext from "../../UserContext";
+import { useDispatch, useSelector } from "react-redux";
+import { userSlice } from "../../../store/store";
 
 export default function AuthModal() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [modalType, setModalType] = useState("login");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -17,6 +21,7 @@ export default function AuthModal() {
   if (modalContext.show && modalContext.show !== modalType) {
     setModalType(modalContext.show);
   }
+  // const user = useContext(UserContext);
 
   const visibleClass = modalContext.show !== false ? "block" : "hidden";
 
@@ -49,7 +54,7 @@ export default function AuthModal() {
         //이름 중복시 디자인 수정
         alert("이미 이름 존재");
       } else if (res.data.result === "ok") {
-        navigate("/login");
+        navigate("/login"); // 회원가입시 로그인 모달로 전환
       }
       console.log(res.data.result);
     });
@@ -68,7 +73,10 @@ export default function AuthModal() {
       if (res.data.result === "loginError") {
         //로그인 실패 시 디자인 수정
         alert("잘못된 정보 입력");
-      } else if (res.data.result === "ok") {
+      } else if (res.data.result === body.name) {
+        // user.setUser(res.data.result);
+        modalContext.setShow(false);
+        dispatch(userSlice.actions.setUser(res.data.result));
         navigate("/");
       }
 
@@ -87,7 +95,7 @@ export default function AuthModal() {
         <div className="border-gray-700 w-1/4 sm:w-1/3 md:w-1/3 bg-white p-5 self-center mx-auto rounded-md">
           {modalType === "login" && <h1 className="text-2xl mb-5">Log In</h1>}
           {modalType === "register" && (
-            <h1 className="text-2xl mb-5">Register</h1>
+            <h1 className="text-2xl mb-5">Sign Up</h1>
           )}
           <p className="text-reddit_text text-sm mb-3">
             By continuing, you agree are setting up a Reddit account and agree

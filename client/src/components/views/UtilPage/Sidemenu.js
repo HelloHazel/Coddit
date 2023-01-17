@@ -9,6 +9,7 @@ export default function Sidemenu() {
 
   const topic_list = useSelector((state) => state.topicSlice.list);
   const sub_list = useSelector((state) => state.subSlice.list);
+  const post_list = useSelector((state) => state.postSlice.list);
 
   useEffect(() => {
     dispatch(asyncTopic());

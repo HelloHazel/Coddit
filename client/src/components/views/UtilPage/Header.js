@@ -1,7 +1,10 @@
 import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getPost } from "../../../store/store";
 // import { Link } from "react-router-dom";
 import logoImg from "../../../img/logo.png";
 import {
+  ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
   BellIcon,
   ChatBubbleOvalLeftEllipsisIcon,
@@ -16,8 +19,13 @@ import { useState, useContext } from "react";
 import AuthModalContext from "./AuthModalContext";
 import Dropdown from "../../Dropdown";
 import ClickOutHandler from "react-clickout-handler";
+import UserContext from "../../UserContext";
+import { Link } from "react-router-dom";
+import { userSlice } from "../../../store/store";
 
 export default function Header() {
+  const dispatch = useDispatch();
+
   const [userDropdownVisibilityClass, setUserDropdownVisibilityClass] =
     useState("hidden");
 
@@ -30,11 +38,29 @@ export default function Header() {
   }
 
   const authModal = useContext(AuthModalContext);
+
+  const changePost = (subid) => {
+    dispatch(getPost(subid));
+  };
+
+  // const user = useContext(UserContext);
+  const user = useSelector((state) => state.userSlice.userName);
+
+  function logout(e) {
+    dispatch(userSlice.actions.LogoutUser(user));
+  }
+
   return (
     <header className="w-full bg-white p-2">
       <div className="mx-4 flex relative ">
-        <img src={logoImg} alt="" className="w-8 h-8 mr-4" />
-
+        <img
+          src={logoImg}
+          alt=""
+          className="w-8 h-8 mr-4"
+          onClick={() => {
+            changePost(-1);
+          }}
+        />
         <form
           action=""
           className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow"
@@ -56,26 +82,30 @@ export default function Header() {
           <button className="px-2 py-1">
             <PlusIcon className="text-gray  w-6 h-6 mx-2" />
           </button> */}
-
-        {/* 로그인 버튼 */}
         <div className="mx-2 hidden sm:block">
-          <Button
-            outline
-            className="mr-1 h-8"
-            onClick={() => authModal.setShow("login")}
-          >
-            Log In
-          </Button>
-
-          {/* 회원가입 버튼 */}
-          <Button
-            className=" h-8"
-            onClick={() => authModal.setShow("register")}
-          >
-            Sign up
-          </Button>
+          {/* 로그인버튼 */}
+          {user === "" && (
+            <Button
+              outline
+              className="mr-1 h-8"
+              onClick={() => authModal.setShow("login")}
+            >
+              Log In
+            </Button>
+          )}
+          {/* 회원가입버튼 */}
+          {user === "" && (
+            <Button
+              className=" h-8"
+              onClick={() => authModal.setShow("register")}
+            >
+              Sign up
+            </Button>
+          )}
+          {!(user === "") && (
+            <span className="block w-50 py-2 px-3 text-sm">Hello, {user}!</span>
+          )}
         </div>
-
         {/* 유저 아이콘 */}
         <ClickOutHandler
           onClickOut={() => setUserDropdownVisibilityClass("hidden")}
@@ -84,15 +114,18 @@ export default function Header() {
             className="rounded-md flex ml-4 "
             onClick={() => toggleUserDropdown()}
           >
-            <UserIcon className="w-6 h-6 text-gray-400 m-1 " />
-            {/* <div className=" w-8 h-8 bg-gray-600 rounded-md">
-              <img
-                src={Avatar}
-                alt=""
-                style={{ filter: "invert(100%)" }}
-                className="block"
-              />
-            </div> */}
+            {user === "" && <UserIcon className="w-6 h-6 text-gray-400 m-1" />}
+
+            {!(user === "") && (
+              <div className=" w-8 h-8 bg-gray-600 rounded-md">
+                <img
+                  src={Avatar}
+                  alt=""
+                  style={{ filter: "invert(100%)" }}
+                  className="block"
+                />
+              </div>
+            )}
             <ChevronDownIcon className="text-gray-500 w-5 h-5 mt-2 m-1" />
           </button>
           <div
@@ -101,14 +134,24 @@ export default function Header() {
               userDropdownVisibilityClass
             }
           >
-            <button
-              onClick={() => authModal.setShow(true)}
-              // onClick={() => authModal.setShow("true")}
-              className="block flex w-50 py-2 px-3 hover:bg-reddit_blue hover:text-white text-sm "
-            >
-              <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> Log In /
-              Sign up
-            </button>
+            {user === "" && (
+              <button
+                onClick={() => authModal.setShow("login")}
+                className="block flex w-50 py-2 px-3 hover:bg-reddit_blue hover:text-white text-sm "
+              >
+                <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> Log In /
+                Sign up
+              </button>
+            )}
+            {!(user === "") && (
+              <button
+                onClick={(e) => logout()}
+                className="block flex w-50 py-2 px-3 hover:bg-gray-300 hover:text-black text-sm"
+              >
+                <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" />
+                Logout
+              </button>
+            )}
           </div>
         </ClickOutHandler>
       </div>

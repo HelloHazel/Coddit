@@ -35,7 +35,7 @@ router.post("/login", (req, res, next) => {
     console.log("result = " + result);
 
     if (result === true) {
-      return res.status(200).json({ result: "ok" });
+      return res.status(200).json({ result: req.body.name });
     } else {
       return res.status(200).json({ result: "loginError" });
     }
