@@ -35,7 +35,7 @@ router.post("/login", (req, res, next) => {
     console.log("result = " + result);
 
     if (result === true) {
-      return res.status(200).json({ result: req.body.name });
+      return res.status(200).json({ result: "ok" });
     } else {
       return res.status(200).json({ result: "loginError" });
     }
@@ -77,6 +77,28 @@ router.post("/register", (req, res, next) => {
     }
 
     if (err) console.log(err);
+  });
+});
+
+router.post("/logincheck", (req, res, next) => {
+  var sql =
+    "select exists (select * from tb_user where user_name = '" +
+    req.body.token +
+    "')";
+
+  console.log(sql);
+  var result;
+
+  db.query(sql, (err, row) => {
+    result = row.rows[0].exists;
+
+    console.log("result = " + result);
+
+    if (result === true) {
+      return res.status(200).json({ result: "ok" });
+    } else {
+      return res.status(200).json({ result: "loginError" });
+    }
   });
 });
 

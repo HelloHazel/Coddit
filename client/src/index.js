@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
 import { ProSidebarProvider } from "react-pro-sidebar";
+import { CookiesProvider } from "react-cookie";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,11 +16,13 @@ root.render(
   // </React.StrictMode>
 
   <Provider store={store}>
-    <ProSidebarProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ProSidebarProvider>
+    <CookiesProvider>
+      <ProSidebarProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ProSidebarProvider>
+    </CookiesProvider>
   </Provider>
 );
 

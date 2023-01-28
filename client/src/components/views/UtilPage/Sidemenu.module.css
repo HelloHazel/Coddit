@@ -1,9 +1,0 @@
-.sidebar {
-  flex: 1;
-  flex-shrink: 0;
-  width: 260px;
-  position: sticky;
-  padding: 80px 10px;
-  list-style: none;
-  padding-left: 0px;
-}

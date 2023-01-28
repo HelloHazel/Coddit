@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Routes, Route, Link } from "react-router-dom";
+import PostPage from "./components/Layout/PostPage";
 import MainPage from "./components/views/LandingPage/MainPage";
 import LoginPage from "./components/views/LoginPage/LoginPage";
 import RegisterPage from "./components/views/RegisterPage/RegisterPage";
@@ -21,6 +22,7 @@ export default function App() {
       <Route path="/" element={<MainPage />}></Route>
       <Route path="/register" element={<RegisterPage />}></Route>
       <Route path="/createPost" element={<CreatePost />}></Route>
+      <Route path="/PostPage" element={<PostPage />}></Route>
     </Routes>
   );
 }

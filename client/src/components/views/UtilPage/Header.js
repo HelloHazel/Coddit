@@ -6,6 +6,7 @@ import logoImg from "../../../img/logo.png";
 import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
+  Bars3Icon,
   BellIcon,
   ChatBubbleOvalLeftEllipsisIcon,
   ChevronDownIcon,
@@ -20,11 +21,25 @@ import AuthModalContext from "./AuthModalContext";
 import Dropdown from "../../Dropdown";
 import ClickOutHandler from "react-clickout-handler";
 import UserContext from "../../UserContext";
-import { Link } from "react-router-dom";
-import { userSlice } from "../../../store/store";
+import { Link, useNavigate } from "react-router-dom";
+import { userSlice, currentSub } from "../../../store/store";
+import { useCookies } from "react-cookie";
 
 export default function Header() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+  }, []);
+
+  const refOne = useRef(null);
+
+  const handleClickOutside = (e) => {
+    if (!refOne.current.contains(e.target)) {
+      setUserDropdownVisibilityClass("hidden");
+    }
+  };
 
   const [userDropdownVisibilityClass, setUserDropdownVisibilityClass] =
     useState("hidden");
@@ -47,7 +62,9 @@ export default function Header() {
   const user = useSelector((state) => state.userSlice.userName);
 
   function logout(e) {
+    authModal.removeCook("userName");
     dispatch(userSlice.actions.LogoutUser(user));
+    navigate("/");
   }
 
   return (
@@ -58,9 +75,14 @@ export default function Header() {
           alt=""
           className="w-8 h-8 mr-4"
           onClick={() => {
+            dispatch(getPost(-1));
+            dispatch(currentSub.actions.setCurrentSub(-1));
+            navigate("/");
             changePost(-1);
           }}
         />
+
+        <Bars3Icon className="w-6 h-6 text-gray-400 my-1 block md:hidden" />
         <form
           action=""
           className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow"
@@ -68,7 +90,7 @@ export default function Header() {
           <MagnifyingGlassIcon className="text-gray-300 h-6 w-6 mt-1" />
           <input
             type="text"
-            className="bg-reddit_gray-brighter text-sm p-1 pl-2 pr-0 block focus:outline-none text-black"
+            className="bg-reddit_gray-brighter text-sm p-1 pl-2 pr-0 block focus:outline-none text-black relative  "
             placeholder="Search Reddit"
           />
         </form>
@@ -107,53 +129,50 @@ export default function Header() {
           )}
         </div>
         {/* 유저 아이콘 */}
-        <ClickOutHandler
-          onClickOut={() => setUserDropdownVisibilityClass("hidden")}
+        <button
+          className="rounded-md flex ml-3 "
+          onClick={() => toggleUserDropdown()}
         >
-          <button
-            className="rounded-md flex ml-4 "
-            onClick={() => toggleUserDropdown()}
-          >
-            {user === "" && <UserIcon className="w-6 h-6 text-gray-400 m-1" />}
+          {user === "" && <UserIcon className="w-6 h-6 text-gray-400 m-1" />}
 
-            {!(user === "") && (
-              <div className=" w-8 h-8 bg-gray-600 rounded-md">
-                <img
-                  src={Avatar}
-                  alt=""
-                  style={{ filter: "invert(100%)" }}
-                  className="block"
-                />
-              </div>
-            )}
-            <ChevronDownIcon className="text-gray-500 w-5 h-5 mt-2 m-1" />
-          </button>
-          <div
-            className={
-              "absolute right-0 top-8 bg-white border border-white z-10 rounded-md " +
-              userDropdownVisibilityClass
-            }
-          >
-            {user === "" && (
-              <button
-                onClick={() => authModal.setShow("login")}
-                className="block flex w-50 py-2 px-3 hover:bg-reddit_blue hover:text-white text-sm "
-              >
-                <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> Log In /
-                Sign up
-              </button>
-            )}
-            {!(user === "") && (
-              <button
-                onClick={(e) => logout()}
-                className="block flex w-50 py-2 px-3 hover:bg-gray-300 hover:text-black text-sm"
-              >
-                <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" />
-                Logout
-              </button>
-            )}
-          </div>
-        </ClickOutHandler>
+          {!(user === "") && (
+            <div className=" w-8 h-8 bg-gray-600 rounded-md">
+              <img
+                src={Avatar}
+                alt=""
+                style={{ filter: "invert(100%)" }}
+                className="block"
+              />
+            </div>
+          )}
+          <ChevronDownIcon className="text-gray-500 w-5 h-5 mt-2 m-1" />
+        </button>
+        <div
+          className={
+            "absolute right-0 top-8 bg-white border border-white z-10 rounded-md " +
+            userDropdownVisibilityClass
+          }
+          ref={refOne}
+        >
+          {user === "" && (
+            <button
+              onClick={() => authModal.setShow("login")}
+              className="block flex w-50 py-2 px-3 hover:bg-reddit_blue hover:text-white text-sm "
+            >
+              <ArrowRightOnRectangleIcon className="w-5 h-5 mr-2" /> Log In /
+              Sign up
+            </button>
+          )}
+          {!(user === "") && (
+            <button
+              onClick={(e) => logout()}
+              className="block flex w-50 py-2 px-3 hover:bg-gray-300 hover:text-black text-sm"
+            >
+              <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" />
+              Logout
+            </button>
+          )}
+        </div>
       </div>
     </header>
 

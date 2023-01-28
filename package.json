@@ -15,9 +15,12 @@
     "framer-motion": "^8.4.2",
     "pg": "^8.8.0",
     "react-clickout-handler": "^1.2.0",
+    "react-cookie": "^4.1.1",
+    "react-dropzone": "^14.2.3",
     "react-markdown": "^8.0.4",
     "react-pro-sidebar": "^1.0.0-alpha.9",
     "react-sidemenu": "^1.1.0",
+    "react-uploader": "^3.3.0",
     "remark-gfm": "^3.0.1",
     "styled-components": "^5.3.6",
     "timeago-react": "^3.0.5"
