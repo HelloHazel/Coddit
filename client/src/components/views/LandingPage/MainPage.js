@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Post from "../../Layout/Post";
 // import styled from "styled-components";
 import PostForm from "../../Layout/PostForm";
@@ -16,6 +16,9 @@ import UserContext from "../../UserContext";
 import Comment from "../../Layout/Comment";
 import CommentModal from "../../Layout/CommentModal";
 import { useCookies } from "react-cookie";
+import { userSlice } from "../../../store/store";
+import { useDispatch } from "react-redux";
+import SideMenutoggle from "../../Layout/SideMenutoggle";
 
 export default function MainPage() {
   //<POST></POST> 의 어디가 문제인지 알 수 없어서 여기에 명시
@@ -24,7 +27,31 @@ export default function MainPage() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["userName"]);
   const [postState, setPostState] = useState({});
-  const [user, setUser] = useState({});
+
+  const [navActive, setNavActive] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [scrollActive, setScrollActive] = useState(false);
+
+  const scrollFixed = () => {
+    if (scrollY > 10) {
+      setScrollY(window.pageYOffset);
+      setScrollActive(true);
+    } else {
+      setScrollY(window.pageYOffset);
+      setScrollActive(false);
+    }
+  };
+
+  useEffect(() => {
+    const scrollListener = () => {
+      window.addEventListener("scroll", scrollFixed);
+    };
+    scrollListener();
+    return () => {
+      window.removeEventListener("scroll", scrollFixed);
+    };
+  });
+
   return (
     <AuthModalContext.Provider
       value={{
@@ -43,22 +70,24 @@ export default function MainPage() {
           setShowPost: setShowPostModal,
         }}
       >
-        <UserContext.Provider value={user}>
+        <div className={`nav ${scrollActive ? "fixed sticky top-0" : ""}`}>
           <Header />
-          <div className="flex">
-            <div className="flex-none">
-              <Sidemenu />
-            </div>
-            <div
-              className=" bg-reddit_gray px-6 flex-auto 
-          "
-            >
-              <Post />
-              <AuthModal />
-              <PostPage />
-            </div>
+        </div>
+        <div className="flex">
+          <div>
+            <Sidemenu />
           </div>
-        </UserContext.Provider>
+          <div
+            className=" bg-reddit_gray px-6 flex-auto 2xl:flex items-center justify-center	  
+          "
+          >
+            <AuthModal />
+            {/* <SideMenutoggle /> */}
+            <Post />
+
+            <PostPage />
+          </div>
+        </div>
       </PostPageModalContext.Provider>
     </AuthModalContext.Provider>
   );

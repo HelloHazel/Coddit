@@ -12,6 +12,37 @@ const db = new Client({
 });
 db.connect();
 
+router.post("/myvotepost", (req, res, next) => {
+  var user_name = req.body.user_name;
+  var sql =
+    "select post_id,vote_kind from tb_vote where user_name = '" +
+    user_name +
+    "'";
+
+  var result;
+
+  db.query(sql, (err, row) => {
+    result = row.rows;
+
+    res.send(result);
+  });
+});
+
+router.post("/myvotecomment", (req, res, next) => {
+  var user_name = req.body.user_name;
+  var sql =
+    "select comment_id,vote_kind from tb_vote where user_name = '" +
+    user_name +
+    "'";
+
+  var result;
+
+  db.query(sql, (err, row) => {
+    result = row.rows;
+    res.send(result);
+  });
+});
+
 router.get("/post", (req, res) => {
   var subId = req.query.subId;
   if (subId == -1) {
@@ -27,6 +58,21 @@ router.get("/post", (req, res) => {
   db.query(sql, (err, row) => {
     result = row.rows;
 
+    res.send(result);
+  });
+});
+
+router.get("/currpost", (req, res) => {
+  var postid = req.query.postid;
+
+  var sql = "select * from tb_post where post_id = " + postid;
+
+  var result;
+
+  db.query(sql, (err, row) => {
+    result = row.rows;
+
+    console.log(result);
     res.send(result);
   });
 });
@@ -68,7 +114,7 @@ router.post("/write", (req, res, next) => {
       ":" +
       seconds;
 
-    var user_name = "abc";
+    var user_name = req.body.user_name;
     var sub_id = req.body.sub_id;
 
     if (sub_id === -1) {
@@ -98,20 +144,26 @@ router.post("/write", (req, res, next) => {
 router.post("/delete", (req, res, next) => {
   var post_id = req.body.post_id;
 
-  var sql = "delete from tb_vote where post_id = " + post_id;
+  var votedeletesql = "delete from tb_vote where post_id = " + post_id;
 
-  db.query(sql, (err, row) => {
+  db.query(votedeletesql, (err, row) => {
     if (err) console.log(err);
+    var sql = "delete from tb_vote where post_id = " + post_id;
 
-    var deleteCommentSql = "delete from tb_comment where post_id = " + post_id;
-
-    db.query(deleteCommentSql, (err, row) => {
+    db.query(sql, (err, row) => {
       if (err) console.log(err);
 
-      var deletePostSql = "delete from tb_post where post_id = " + post_id;
+      var deleteCommentSql =
+        "delete from tb_comment where post_id = " + post_id;
 
-      db.query(deletePostSql, (err, row) => {
+      db.query(deleteCommentSql, (err, row) => {
         if (err) console.log(err);
+
+        var deletePostSql = "delete from tb_post where post_id = " + post_id;
+
+        db.query(deletePostSql, (err, row) => {
+          if (err) console.log(err);
+        });
       });
     });
     return res.status(200).json({ result: "ok" });
@@ -168,7 +220,7 @@ router.post("/writecomment", (req, res, next) => {
       ":" +
       seconds;
 
-    var user_name = "abc";
+    var user_name = req.body.user_name;
     var post_id = req.body.post_id;
 
     var commentTable = [
@@ -237,23 +289,25 @@ router.post("/deletecomment", (req, res, next) => {
   comment_id = req.body.comment_id;
   post_id = req.body.post_id;
 
-  var sql = "delete from tb_comment where comment_id = " + comment_id;
+  var votedeletesql = "delete from tb_vote where comment_id = " + comment_id;
 
-  console.log(sql);
+  db.query(votedeletesql, (err, row) => {
+    var sql = "delete from tb_comment where comment_id = " + comment_id;
+    if (err) console.log(err);
 
-  db.query(sql, (err, row) => {
-    if (err) console.log("에러 원인이 뭐야??" + err);
+    db.query(sql, (err, row) => {
+      if (err) console.log("에러 원인이 뭐야??" + err);
 
-    var updateSql =
-      "update tb_post SET comment_count = (select count(*) from tb_comment where post_id = " +
-      post_id +
-      ") where post_id = " +
-      post_id;
+      var updateSql =
+        "update tb_post SET comment_count = (select count(*) from tb_comment where post_id = " +
+        post_id +
+        ") where post_id = " +
+        post_id;
 
-    db.query(updateSql, (err, row) => {
-      if (err) console.log(err);
+      db.query(updateSql, (err, row) => {
+        if (err) console.log(err);
+      });
     });
-
     return res.status(200).json({ result: "ok" });
   });
 });
@@ -263,7 +317,7 @@ router.post("/vote", (req, res, next) => {
   var vote_kind;
   var comment_id;
   var post_id;
-  var user_name = "abc";
+  var user_name;
 
   var sql = "select max(vote_id) from tb_vote";
 
@@ -273,31 +327,117 @@ router.post("/vote", (req, res, next) => {
     vote_kind = req.body.vote_kind;
     comment_id = req.body.comment_id;
     post_id = req.body.post_id;
+    user_name = req.body.username;
 
     var voteTable = [vote_id, vote_kind, post_id, comment_id, user_name];
 
-    var insertSql = "insert into tb_vote values ($1,$2,$3,$4,$5)";
+    if (comment_id === null) {
+      var checksql =
+        "select vote_id,vote_kind from tb_vote where post_id = " +
+        post_id +
+        " and user_name = '" +
+        user_name +
+        "'";
+    } else {
+      var checksql =
+        "select vote_id,vote_kind from tb_vote where comment_id = " +
+        comment_id +
+        " and user_name = '" +
+        user_name +
+        "'";
+    }
 
-    db.query(insertSql, voteTable, (err, row) => {
-      if (err) console.log(err);
+    db.query(checksql, (err, row) => {
+      if (row.rows[0] === undefined) {
+        var insertSql = "insert into tb_vote values ($1,$2,$3,$4,$5)";
 
-      if (comment_id === null) {
-        var updateSql =
-          "update tb_post SET vote_sum = (select sum(vote_kind) from tb_vote where post_id = " +
-          post_id +
-          ") where post_id = " +
-          post_id;
+        db.query(insertSql, voteTable, (err, row) => {
+          if (err) console.log(err);
+
+          if (comment_id === null) {
+            var updateSql =
+              "update tb_post SET vote_sum = (select sum(vote_kind) from tb_vote where post_id = " +
+              post_id +
+              ") where post_id = " +
+              post_id;
+          } else {
+            var updateSql =
+              "update tb_comment SET vote_sum = (select sum(vote_kind) from tb_vote where comment_id = " +
+              comment_id +
+              ") where comment_id = " +
+              comment_id;
+          }
+
+          db.query(updateSql, (err, row) => {
+            if (err) console.log(err);
+          });
+        });
       } else {
-        var updateSql =
-          "update tb_comment SET vote_sum = (select sum(vote_kind) from tb_vote where comment_id = " +
-          comment_id +
-          ") where comment_id = " +
-          comment_id;
-      }
+        vote_id = row.rows[0].vote_id;
 
-      db.query(updateSql, (err, row) => {
-        if (err) console.log(err);
-      });
+        if (vote_kind === row.rows[0].vote_kind) {
+          var modifysql = "delete from tb_vote where vote_id = " + vote_id;
+          console.log("제거");
+        } else {
+          var modifysql =
+            "update tb_vote set vote_kind = " +
+            vote_kind +
+            " where vote_id = " +
+            vote_id;
+        }
+
+        db.query(modifysql, (err, row) => {
+          if (err) console.log(err);
+          var chk;
+
+          if (comment_id === null) {
+            var chksql =
+              "select sum(vote_kind) from tb_vote where post_id = " + post_id;
+            db.query(chksql, (err, row) => {
+              if (err) console.log(err);
+
+              if (row.rows[0].sum === null) {
+                chk = 0;
+              } else {
+                chk = row.rows[0].sum;
+              }
+
+              var updateSql =
+                "update tb_post SET vote_sum = " +
+                chk +
+                " where post_id = " +
+                post_id;
+
+              db.query(updateSql, (err, row) => {
+                if (err) console.log(err);
+              });
+            });
+          } else {
+            var chksql =
+              "select sum(vote_kind) from tb_vote where comment_id = " +
+              comment_id;
+            db.query(chksql, (err, row) => {
+              if (err) console.log(err);
+
+              if (row.rows[0].sum === null) {
+                chk = 0;
+              } else {
+                chk = row.rows[0].sum;
+              }
+
+              var updateSql =
+                "update tb_comment SET vote_sum = " +
+                chk +
+                " where comment_id = " +
+                comment_id;
+
+              db.query(updateSql, (err, row) => {
+                if (err) console.log(err);
+              });
+            });
+          }
+        });
+      }
     });
     return res.status(200).json({ result: "ok" });
   });

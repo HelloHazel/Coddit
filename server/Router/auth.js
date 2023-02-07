@@ -32,8 +32,6 @@ router.post("/login", (req, res, next) => {
   db.query(sql, user_table, (err, row) => {
     result = row.rows[0].exists;
 
-    console.log("result = " + result);
-
     if (result === true) {
       return res.status(200).json({ result: "ok" });
     } else {
@@ -85,14 +83,10 @@ router.post("/logincheck", (req, res, next) => {
     "select exists (select * from tb_user where user_name = '" +
     req.body.token +
     "')";
-
-  console.log(sql);
   var result;
 
   db.query(sql, (err, row) => {
     result = row.rows[0].exists;
-
-    console.log("result = " + result);
 
     if (result === true) {
       return res.status(200).json({ result: "ok" });

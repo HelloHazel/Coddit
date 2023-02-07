@@ -14,7 +14,6 @@ export default function Sidemenu() {
 
   const topic_list = useSelector((state) => state.topicSlice.list);
   const sub_list = useSelector((state) => state.subSlice.list);
-  const post_list = useSelector((state) => state.postSlice.list);
 
   useEffect(() => {
     dispatch(asyncTopic());
@@ -27,11 +26,10 @@ export default function Sidemenu() {
   };
 
   return (
-    <div>
+    <div className="fixed sticky top-12">
       <div>
         <Sidebar className="hidden sm:block">
           <Menu>
-            <label className="">Topics</label>
             {topic_list.map((tp, i) => (
               <SubMenu key={i} label={tp.topic_name}>
                 {sub_list.map((sub, j) => {

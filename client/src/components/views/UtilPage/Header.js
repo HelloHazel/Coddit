@@ -7,23 +7,16 @@ import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
   Bars3Icon,
-  BellIcon,
-  ChatBubbleOvalLeftEllipsisIcon,
   ChevronDownIcon,
   MagnifyingGlassIcon,
-  PlusIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from "../../../img/avatar.png";
 import Button from "../../Layout/Button";
 import { useState, useContext } from "react";
 import AuthModalContext from "./AuthModalContext";
-import Dropdown from "../../Dropdown";
-import ClickOutHandler from "react-clickout-handler";
-import UserContext from "../../UserContext";
-import { Link, useNavigate } from "react-router-dom";
 import { userSlice, currentSub } from "../../../store/store";
-import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const dispatch = useDispatch();
@@ -56,6 +49,7 @@ export default function Header() {
 
   const changePost = (subid) => {
     dispatch(getPost(subid));
+    dispatch(currentSub.actions.setCurrentSub(subid));
   };
 
   // const user = useContext(UserContext);
@@ -75,14 +69,15 @@ export default function Header() {
           alt=""
           className="w-8 h-8 mr-4"
           onClick={() => {
-            dispatch(getPost(-1));
-            dispatch(currentSub.actions.setCurrentSub(-1));
-            navigate("/");
             changePost(-1);
+            // navigate("/");
           }}
         />
 
-        <Bars3Icon className="w-6 h-6 text-gray-400 my-1 block md:hidden" />
+        <Bars3Icon
+          className={"w-6 h-6 text-gray-400 my-1 block md:hidden"}
+          ref={refOne}
+        ></Bars3Icon>
         <form
           action=""
           className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow"
@@ -94,16 +89,7 @@ export default function Header() {
             placeholder="Search Reddit"
           />
         </form>
-        {/* 
-          <button className="px-2 py-1">
-            <ChatBubbleOvalLeftEllipsisIcon className="text-gray  w-6 h-6 mx-2" />
-          </button>
-          <button className="px-2 py-1">
-            <BellIcon className="text-gray  w-6 h-6 mx-2" />
-          </button>
-          <button className="px-2 py-1">
-            <PlusIcon className="text-gray  w-6 h-6 mx-2" />
-          </button> */}
+
         <div className="mx-2 hidden sm:block">
           {/* 로그인버튼 */}
           {user === "" && (
@@ -115,6 +101,7 @@ export default function Header() {
               Log In
             </Button>
           )}
+
           {/* 회원가입버튼 */}
           {user === "" && (
             <Button
@@ -128,6 +115,7 @@ export default function Header() {
             <span className="block w-50 py-2 px-3 text-sm">Hello, {user}!</span>
           )}
         </div>
+
         {/* 유저 아이콘 */}
         <button
           className="rounded-md flex ml-3 "
@@ -175,25 +163,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-
-    // <div className={styles.header}>
-    //   <div className={styles.contents}>
-    //     <div className={styles.logo}>
-    //       <img src={logoImg} alt="React" className="App-logo"></img>Reddit
-    //     </div>
-    //     <nav className={styles.navigation}>
-    //       <ul className={styles.ul}>
-    //         <li className={styles.ul}>
-    //           <Link to="/login">
-    //             <button className={styles.button}>Log In</button>
-    //           </Link>
-    //         </li>
-    //         <li className={styles.li}>
-    //           <i className="fa-regular fa-user"></i>
-    //         </li>
-    //       </ul>
-    //     </nav>
-    //   </div>
-    // </div>
   );
 }

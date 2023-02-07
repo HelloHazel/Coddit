@@ -7,7 +7,11 @@ import AuthModalContext from "./AuthModalContext";
 import ClickOutHandler from "react-clickout-handler";
 import UserContext from "../../UserContext";
 import { useDispatch, useSelector } from "react-redux";
-import { userSlice } from "../../../store/store";
+import {
+  userSlice,
+  asyncMyVoteComment,
+  asyncMyVotePost,
+} from "../../../store/store";
 import { useCookies } from "react-cookie";
 
 export default function AuthModal() {
@@ -59,10 +63,10 @@ export default function AuthModal() {
     axios.post("/api/register", body).then((res) => {
       if (res.data.result === "alreadyEmail") {
         //이메일 존재시 디자인 수정
-        alert("이미 이메일 존재");
+        alert("이미 존재하는 이메일입니다");
       } else if (res.data.result === "alreadyName") {
         //이름 중복시 디자인 수정
-        alert("이미 이름 존재");
+        alert("이미 존재하는 이름입니다");
       } else if (res.data.result === "ok") {
         modalContext.setShow(false);
       }
@@ -78,12 +82,14 @@ export default function AuthModal() {
     axios.post("/api/login", body).then((res) => {
       if (res.data.result === "loginError") {
         //로그인 실패 시 디자인 수정
-        alert("잘못된 정보 입력");
+        alert("잘못된 정보입니다");
       } else if (res.data.result === "ok") {
         // user.setUser(res.data.result);
         modalContext.setShow(false);
         dispatch(userSlice.actions.setUser(username));
         modalContext.setCook("userName", username);
+        dispatch(asyncMyVotePost(username));
+        dispatch(asyncMyVoteComment(username));
         navigate("/");
       }
     });
@@ -97,6 +103,8 @@ export default function AuthModal() {
       if (res.data.result === "ok") {
         dispatch(userSlice.actions.setUser(modalContext.cookie.userName));
         modalContext.setCook("userName", modalContext.cookie.userName);
+        dispatch(asyncMyVotePost(modalContext.cookie.userName));
+        dispatch(asyncMyVoteComment(modalContext.cookie.userName));
       }
     });
   }

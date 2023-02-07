@@ -5,6 +5,8 @@ import {
   getPost,
   currentSub,
   asyncComment,
+  asyncMyVotePost,
+  getCurrentPost,
 } from "../../store/store";
 import PostContent from "../views/UtilPage/PostContent";
 import TimeAgo from "timeago-react";
@@ -32,50 +34,118 @@ export default function Post(props) {
   const sub_list = useSelector((state) => state.subSlice.list);
 
   const post_list = useSelector((state) => state.postSlice.list);
+
+  const myvotepost = useSelector((state) => state.myVotePost.list);
+
   useEffect(() => {
     dispatch(getPost(-1));
     dispatch(currentSub.actions.setCurrentSub(-1));
   }, []);
 
-  function votePost(vote_kind, post_id, comment_id) {
+  function votePost(vote_kind, post_id, comment_id, username) {
     let body = {
       vote_kind: vote_kind,
       post_id: post_id,
       comment_id: comment_id,
+      username: username,
     };
 
     axios.post("/api/vote", body).then((res) => {
       if (res.data.result === "ok") {
+        // dispatch(asyncMyVotePost(user)).then(() => {
+        //   dispatch(getPost(sub));
+        // });
+        dispatch(asyncMyVotePost(user));
         dispatch(getPost(sub));
       }
     });
   }
 
+  const isVote = (post_id, user_name) => {
+    if (user_name === "" || user_name === null || user_name === undefined) {
+      return 0;
+    } else {
+      if (
+        myvotepost === null ||
+        myvotepost === undefined ||
+        myvotepost.length <= 0
+      ) {
+        return 0;
+      } else {
+        for (var i = 0; i < myvotepost.length; i++) {
+          if (myvotepost[i].post_id === post_id) {
+            return myvotepost[i].vote_kind;
+          }
+        }
+      }
+    }
+    return 0;
+  };
+
   return (
-    <div>
+    <div className="2xl:w-2/3">
       <PostForm />
-      <div className=" 2xl:place-content-center auto-rows-max	 	">
+      <div className="auto-rows-max	 	">
         {post_list.map((item, index) => (
           <div
             className="border border-gray-300 bg-white my-3 rounded-md flex  "
             key={index}
           >
-            <div className="float-left bg-gray-100 p-2 text-center space-y-1  ">
-              <HandThumbUpIcon
-                className="h-4 text-gray-500"
-                onClick={() => votePost(1, item.post_id, null)}
-              />
-              <p>{item.vote_sum}</p>
-              <HandThumbDownIcon
-                className="text-gray-500"
-                onClick={() => votePost(-1, item.post_id, null, item.sub_id)}
-              />
-            </div>
+            {isVote(item.post_id, user) === 0 ? (
+              <div className="float-left bg-gray-100 p-2 text-center space-y-1  ">
+                <HandThumbUpIcon
+                  className="h-4"
+                  onClick={() => {
+                    votePost(1, item.post_id, null, user);
+                  }}
+                />
+                <p>{item.vote_sum}</p>
+                <HandThumbDownIcon
+                  className="h-4"
+                  onClick={() => {
+                    votePost(-1, item.post_id, null, user);
+                  }}
+                />
+              </div>
+            ) : isVote(item.post_id, user) === 1 ? (
+              <div className="float-left bg-gray-100 p-2 text-center space-y-1  ">
+                <HandThumbUpIcon
+                  className="h-4 fill-orange-400 "
+                  onClick={() => {
+                    votePost(1, item.post_id, null, user);
+                  }}
+                />
+                <p>{item.vote_sum}</p>
+                <HandThumbDownIcon
+                  className="h-4"
+                  onClick={() => {
+                    votePost(-1, item.post_id, null, user);
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="float-left bg-gray-100 p-2 text-center space-y-1  ">
+                <HandThumbUpIcon
+                  className="h-4 "
+                  onClick={() => {
+                    votePost(1, item.post_id, null, user);
+                  }}
+                />
+                <p>{item.vote_sum}</p>
+                <HandThumbDownIcon
+                  className="h-4 fill-blue-300"
+                  onClick={() => {
+                    votePost(-1, item.post_id, null, user);
+                  }}
+                />
+              </div>
+            )}
             <div className="  p-2">
               {/* <PostContent /> */}
               <div
                 onClick={() => {
                   // navigate("/PostPage", { state: item });
+                  dispatch(getCurrentPost(item.post_id));
                   postModal.setState(item);
                   dispatch(asyncComment(item.post_id));
                   postModal.setShowPost(!postModal.showPost);
@@ -92,7 +162,7 @@ export default function Post(props) {
                     }
                   })}
                   <p className="text-reddit_text text-sm ">
-                    • Posted by u/{item.user_name}
+                    • Posted by u/{item.user_name}{" "}
                     <TimeAgo datetime={item.post_date} />
                   </p>
                 </div>

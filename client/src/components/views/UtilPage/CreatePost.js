@@ -12,6 +12,7 @@ import AuthModalContext from "./AuthModalContext";
 import UserContext from "../../UserContext";
 import { useDropzone } from "react-dropzone";
 import { Box } from "@chakra-ui/react";
+import { useCookies } from "react-cookie";
 
 export default function CreatePost() {
   const [files, setFiles] = useState([]);
@@ -26,6 +27,7 @@ export default function CreatePost() {
   const [post_link, setPostLink] = useState("");
   const [sub_id, setSubID] = useState(-1);
   const [value, setValue] = useState("default");
+  const [cookies, setCookie, removeCookie] = useCookies(["userName"]);
 
   // const onDrop = useCallback((acceptedFiles) => {
   //   // Do something with the files
@@ -52,6 +54,8 @@ export default function CreatePost() {
 
   const sub_list = useSelector((state) => state.subSlice.list);
 
+  const user_name = useSelector((state) => state.userSlice.userName);
+
   const [t, setTab] = useState(0);
 
   const Tab = [
@@ -74,7 +78,7 @@ export default function CreatePost() {
   }, []);
 
   const changePost = (subid) => {
-    dispatch(getPost(subid));
+    dispatch(getPost(subid, user_name));
   };
 
   const onPostTitleHandler = (event) => {
@@ -98,6 +102,7 @@ export default function CreatePost() {
       post_imgpath: post_imgpath,
       post_link: post_link,
       sub_id: sub_id,
+      user_name: user_name,
     };
 
     axios.post("/api/write", body).then((res) => {
@@ -113,138 +118,109 @@ export default function CreatePost() {
 
   return (
     <AuthModalContext.Provider
-      value={{ show: showAuthModal, setShow: setShowModal }}
+      value={{
+        show: showAuthModal,
+        setShow: setShowModal,
+        cookie: cookies,
+        setCook: setCookie,
+        removeCook: removeCookie,
+      }}
     >
-      <UserContext.Provider value={user}>
-        <div>
-          <Header />
-          <div className="w-screen h-screen fixed left-0 bg-reddit_gray ">
-            <AuthModal />
+      <div>
+        <Header />
+        <div className="w-screen h-screen fixed left-0 bg-reddit_gray overflow-auto">
+          <AuthModal />
+          <div className=" p-5 self-center mx-auto rounded-md">
             <div className=" p-5 self-center mx-auto rounded-md">
-              <div className=" p-5 self-center mx-auto rounded-md">
-                <h1 className="text-xl mb-4">Create a post</h1>
+              <h1 className="text-xl mb-4">Create a post</h1>
 
-                <select
-                  defaultValue={value}
-                  className="h-8 w-2/5 border border-gray-300 bg-white rounded-md"
-                  onChange={onSubIDHandler}
-                >
-                  <option value="default" disabled hidden>
-                    choose a community!
-                  </option>
-                  {sub_list.map((sub, i) => {
-                    return (
-                      <option key={i} value={sub.sub_id}>
-                        {sub.sub_name}
-                      </option>
-                    );
-                  })}
-                </select>
+              <select
+                defaultValue={value}
+                className="h-8 w-2/5 border border-gray-300 bg-white rounded-md"
+                onChange={onSubIDHandler}
+              >
+                <option value="default" disabled hidden>
+                  choose a community!
+                </option>
+                {sub_list.map((sub, i) => {
+                  return (
+                    <option key={i} value={sub.sub_id}>
+                      {sub.sub_name}
+                    </option>
+                  );
+                })}
+              </select>
 
-                <section>
-                  {Tab.map((e, index) => (
-                    <Button key={index} onClick={(e) => setTab(index)}>
-                      {e.title}
-                    </Button>
-                  ))}
+              <section>
+                {Tab.map((e, index) => (
+                  <button
+                    className="relative bg-white text-sm font-bold w-32 h-10 mt-2 border border-gray-300 text-gray-300 focus:text-blue-500 focus:border-b-4 focus:border-b-blue-300"
+                    key={index}
+                    onClick={(e) => setTab(index)}
+                  >
+                    {e.title}
+                  </button>
+                ))}
 
-                  <div className="bg-white my-2 px-8 py-4">
-                    <Input
-                      className="w-full  border border-gray"
-                      value={post_title}
-                      type="text"
-                      placeholder="title"
-                      onChange={onPostTitleHandler}
+                <div className="bg-white mb-2 px-8 py-4">
+                  <Input
+                    className="w-full  border border-gray"
+                    value={post_title}
+                    type="text"
+                    placeholder="title"
+                    onChange={onPostTitleHandler}
+                  />
+                  {t === 0 && (
+                    <Textarea
+                      className={"w-full mb-3"}
+                      placeholder="text(optional)"
+                      rows={10}
+                      value={post_content}
+                      onChange={onPostContentHandler}
                     />
-                    {t === 0 && (
-                      <Textarea
-                        className={"w-full mb-3"}
-                        placeholder="text(optional)"
-                        rows={10}
-                        value={post_content}
-                        onChange={onPostContentHandler}
-                      />
-                    )}
-                    {t === 1 && (
-                      <div>
-                        <div className="relative border border-gray scroll-auto flex-auto p-3	">
-                          <img src={file}></img>
-                          <div {...getRootProps()}>
-                            <input {...getInputProps()} />
-                            {isDragActive ? (
-                              <p>Drop the files here ...</p>
-                            ) : (
-                              <div>
-                                <Button>Open</Button>
-                                <p>
-                                  Drag 'n' drop some files here, or click to
-                                  select files
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                  )}
+                  {t === 1 && (
+                    <div>
+                      <div className=" border border-gray mb-3 pt-20 p-3">
+                        <img src={file}></img>
+                        <div {...getRootProps()}>
+                          <input {...getInputProps()} />
+                          {isDragActive ? (
+                            <p>Drop the files here ...</p>
+                          ) : (
+                            <div>
+                              <Button>Open</Button>
+                              <p>
+                                Drag 'n' drop some files here, or click to
+                                select files
+                              </p>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    )}
-                    {t === 2 && (
-                      <Textarea
-                        className={"w-full mb-3"}
-                        placeholder="Link 받기"
-                        rows={10}
-                        value={post_link}
-                        onChange={onPostLinkHandler}
-                      />
-                    )}
-                    <div className={"text-right"}>
-                      <Button className={"px-4 py-2 mr-3"}>Cancel</Button>
-                      <Button type="submit" onClick={(e) => writePost()}>
-                        Submit
-                      </Button>
                     </div>
+                  )}
+                  {t === 2 && (
+                    <Textarea
+                      className={"w-full mb-3"}
+                      placeholder="Link 받기"
+                      rows={10}
+                      value={post_link}
+                      onChange={onPostLinkHandler}
+                    />
+                  )}
+                  <div className={"text-right"}>
+                    <Button className={"px-4 py-2 mr-3"}>Cancel</Button>
+                    <Button type="submit" onClick={(e) => writePost()}>
+                      Submit
+                    </Button>
                   </div>
-                </section>
-              </div>
+                </div>
+              </section>
             </div>
           </div>
         </div>
-      </UserContext.Provider>
+      </div>
     </AuthModalContext.Provider>
-    // <Box w="100%" m="auto" className=" bg-reddit_gray">
-    //   <Header />
-    //   <Box w={["100%", "90%", "80%", "70%"]} m="auto">
-    //     <form>
-    //       Create a post
-    //       <Stack spacing={3}>
-    //         <FormControl>
-    //           <RadioGroup>
-    //             <Stack direction="row" spacing={3}>
-    //               <Radio value="text">Post</Radio>
-    //               <Radio value="link">Link</Radio>
-    //             </Stack>
-    //           </RadioGroup>
-    //         </FormControl>
-    //         <FormControl>
-    //           <Input
-    //             value={post_title}
-    //             type="text"
-    //             placeholder="title"
-    //             onChange={onPostTitleHandler}
-    //           />
-    //         </FormControl>
-    //         <FormControl>
-    //           <Textarea
-    //             placeholder="text(optional)"
-    //             rows={10}
-    //             value={post_content}
-    //             onChange={onPostContentHandler}
-    //           />
-    //         </FormControl>
-    //         <Button type="submit" onClick={(e) => writePost()}>
-    //           Submit
-    //         </Button>
-    //       </Stack>
-    //     </form>
-    //   </Box>
-    // </Box>
   );
 }
