@@ -250,6 +250,26 @@ router.post("/writecomment", (req, res, next) => {
   });
 });
 
+router.post("/editcontent", (req, res, next) => {
+  var edit_content;
+  var post_id;
+
+  edit_content = req.body.post_content;
+  post_id = req.body.post_id;
+
+  var sql =
+    "update tb_post set post_content = '" +
+    edit_content +
+    "' where post_id = " +
+    post_id;
+
+  db.query(sql, (err, row) => {
+    if (err) console.log(err);
+
+    return res.status(200).json({ result: "ok" });
+  });
+});
+
 router.post("/editcomment", (req, res, next) => {
   var comment_id;
   var edit_comment;

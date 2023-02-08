@@ -65,6 +65,12 @@ export default function PostPage() {
 
   const currentPost = useSelector((state) => state.currentPost.list);
 
+  const [cp, setCP] = useState(currentPost);
+
+  useEffect(() => {
+    setCP(currentPost);
+  }, [currentPost]);
+
   // 댓글 기능
   const [comment, setComment] = useState("");
   const comment_list = useSelector((state) => state.commentSlice.list);
@@ -173,6 +179,25 @@ export default function PostPage() {
     });
   }
 
+  function EditContent() {
+    let body = {
+      post_content: post_content,
+      post_id: modalContext.state.post_id,
+    };
+
+    axios.post("/api/editcontent", body).then((res) => {
+      if (res.data.result === "ok") {
+        setIsEdit(false);
+        dispatch(getPost(sub)).then(() => {
+          dispatch(getCurrentPost(modalContext.state.post_id)).then(() => {
+            // console.log(currentPost[0]);
+            // modalContext.setState(currentPost[0]);
+          });
+        });
+      }
+    });
+  }
+
   function editComment(comment, comment_id) {
     let body = {
       comment_content: comment,
@@ -217,8 +242,8 @@ export default function PostPage() {
         dispatch(asyncComment(modalContext.state.post_id));
         dispatch(getPost(sub)).then(() => {
           dispatch(getCurrentPost(modalContext.state.post_id)).then(() => {
-            console.log(currentPost[0]);
-            modalContext.setState(currentPost[0]);
+            // console.log(currentPost[0]);
+            // modalContext.setState(currentPost[0]);
           });
         });
       }
@@ -368,7 +393,7 @@ export default function PostPage() {
                   <section>
                     <Textarea
                       className={"w-full mb-3"}
-                      placeholder="text(optional)"
+                      placeholder={modalContext.state.post_content}
                       rows={10}
                       value={post_content}
                       onChange={onPostContentHandler}
@@ -381,7 +406,7 @@ export default function PostPage() {
                       >
                         Cancel
                       </Button>
-                      <Button type="submit">Save</Button>
+                      <Button onClick={() => EditContent()}>Save</Button>
                     </div>
                   </section>
                 )}
