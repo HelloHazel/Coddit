@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPost } from "../../../store/store";
 // import { Link } from "react-router-dom";
 import logoImg from "../../../img/logo.png";
+import title from "../../../img/titleLogo.png";
 import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
@@ -64,15 +65,16 @@ export default function Header() {
   return (
     <header className="w-full bg-white p-2">
       <div className="mx-4 flex relative ">
-        <img
-          src={logoImg}
-          alt=""
-          className="w-8 h-8 mr-4"
+        <button
+          className="flex"
           onClick={() => {
             changePost(-1);
             // navigate("/");
           }}
-        />
+        >
+          <img src={logoImg} alt="" className="w-8 h-8 mr-1" />
+          <img src={title} alt="" className="w-13 h-5 mr-4 mt-1" />
+        </button>
 
         <Bars3Icon
           className={"w-6 h-6 text-gray-400 my-1 block md:hidden"}

@@ -14,15 +14,18 @@ db.connect();
 
 router.post("/myvotepost", (req, res, next) => {
   var user_name = req.body.user_name;
+
+  var result;
+
   var sql =
     "select post_id,vote_kind from tb_vote where user_name = '" +
     user_name +
     "'";
 
-  var result;
-
   db.query(sql, (err, row) => {
     result = row.rows;
+
+    console.log(result);
 
     res.send(result);
   });
@@ -30,12 +33,13 @@ router.post("/myvotepost", (req, res, next) => {
 
 router.post("/myvotecomment", (req, res, next) => {
   var user_name = req.body.user_name;
+
+  var result;
+
   var sql =
     "select comment_id,vote_kind from tb_vote where user_name = '" +
     user_name +
     "'";
-
-  var result;
 
   db.query(sql, (err, row) => {
     result = row.rows;

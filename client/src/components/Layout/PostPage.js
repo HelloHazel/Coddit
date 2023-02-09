@@ -65,11 +65,24 @@ export default function PostPage() {
 
   const currentPost = useSelector((state) => state.currentPost.list);
 
+  const useDidMountEffect = (func, deps) => {
+    const didMount = useRef(false);
+
+    useEffect(() => {
+      if (didMount.current) func();
+      else didMount.current = true;
+    }, deps);
+  };
+
+  useDidMountEffect(() => {
+    modalContext.setState(currentPost[0]);
+  }, [currentPost]);
+
   const [cp, setCP] = useState(currentPost);
 
-  useEffect(() => {
-    setCP(currentPost);
-  }, [currentPost]);
+  // useEffect(() => {
+  //   modalContext.setState(currentPost[0]);
+  // }, [currentPost]);
 
   // 댓글 기능
   const [comment, setComment] = useState("");
@@ -226,7 +239,9 @@ export default function PostPage() {
   }
 
   function votePost(vote_kind, post_id, comment_id, username) {
-    console.log(username);
+    if (username == "" || username == null || username == undefined) {
+      return;
+    }
 
     let body = {
       vote_kind: vote_kind,

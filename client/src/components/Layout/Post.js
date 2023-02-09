@@ -43,6 +43,10 @@ export default function Post(props) {
   }, []);
 
   function votePost(vote_kind, post_id, comment_id, username) {
+    if (username == "" || username == null || username == undefined) {
+      return;
+    }
+
     let body = {
       vote_kind: vote_kind,
       post_id: post_id,
