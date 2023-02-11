@@ -98,7 +98,7 @@ const commentSlice = createSlice({
     changeEditComment: (state, action, comment) => {
       for (var i = 0; i < state.list.length; i++) {
         if (state.list[i].comment_id === action.payload.comment_id) {
-          console.log(action.payload.edit_comment);
+          // console.log(action.payload.edit_comment);
           state.list[i].edit_comment = action.payload.edit_comment;
         }
       }
@@ -126,7 +126,7 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.userName = action.payload;
-      console.log(state.userName);
+      // console.log(state.userName);
     },
     LogoutUser: (state) => {
       state.userName = "";
@@ -188,6 +188,16 @@ const getPost = createAsyncThunk("postSlice/getPost", async (subid) => {
   return resp.data;
 });
 
+const getSearchPost = createAsyncThunk(
+  "postSlice/getSearchPost",
+  async (searchContent) => {
+    const resp = await axios.get("/api/search", {
+      params: { searchContent: searchContent },
+    });
+    return resp.data;
+  }
+);
+
 const postSlice = createSlice({
   name: "postSlice",
   initialState: {
@@ -206,7 +216,7 @@ const postSlice = createSlice({
     changeEditPost: (state, action, post) => {
       for (var i = 0; i < state.list.length; i++) {
         if (state.list[i].post_id === action.payload.post_id) {
-          console.log(action.payload.edit_post);
+          // console.log(action.payload.edit_post);
           state.list[i].edit_post = action.payload.edit_post;
         }
       }
@@ -219,6 +229,9 @@ const postSlice = createSlice({
     builder.addCase(getPost.fulfilled, (state, action) => {
       state.list = action.payload;
       // console.log(action.payload);
+    });
+    builder.addCase(getSearchPost.fulfilled, (state, action) => {
+      state.list = action.payload;
     });
     builder.addCase(getPost.rejected, (state, action) => {
       // console.log("rejected");
@@ -298,4 +311,5 @@ export {
   asyncMyVotePost,
   getCurrentPost,
   currentPost,
+  getSearchPost,
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getPost } from "../../../store/store";
+import { getPost, getSearchPost } from "../../../store/store";
 // import { Link } from "react-router-dom";
 import logoImg from "../../../img/logo.png";
 import title from "../../../img/titleLogo.png";
@@ -28,6 +28,8 @@ export default function Header() {
   }, []);
 
   const refOne = useRef(null);
+
+  const [search_content, setSearch] = useState("");
 
   const handleClickOutside = (e) => {
     if (!refOne.current.contains(e.target)) {
@@ -62,6 +64,17 @@ export default function Header() {
     navigate("/");
   }
 
+  function SearchContent() {
+    dispatch(getSearchPost(search_content));
+    setSearch("");
+  }
+
+  const activeEnter = (e) => {
+    if (e.key === "Enter") {
+      SearchContent();
+    }
+  };
+
   return (
     <header className="w-full bg-white p-2">
       <div className="mx-4 flex relative ">
@@ -80,17 +93,25 @@ export default function Header() {
           className={"w-6 h-6 text-gray-400 my-1 block md:hidden"}
           ref={refOne}
         ></Bars3Icon>
-        <form
+        {/* <form
           action=""
           className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow"
-        >
-          <MagnifyingGlassIcon className="text-gray-300 h-6 w-6 mt-1" />
+        > */}
+        <div className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow">
+          <MagnifyingGlassIcon
+            className="text-gray-300 h-6 w-6 mt-1"
+            onClick={() => SearchContent()}
+          />
           <input
+            value={search_content}
             type="text"
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => activeEnter(e)}
             className="bg-reddit_gray-brighter text-sm p-1 pl-2 pr-0 block focus:outline-none text-black relative  "
             placeholder="Search Reddit"
           />
-        </form>
+        </div>
+        {/* </form> */}
 
         <div className="mx-2 hidden sm:block">
           {/* 로그인버튼 */}

@@ -111,7 +111,6 @@ export default function PostPage() {
     reader.readAsDataURL(blob);
     reader.onloadend = () => {
       const base64data = reader.result;
-      console.log(base64data);
 
       setFile(base64data);
       setPostImgPath(base64data);
@@ -203,7 +202,6 @@ export default function PostPage() {
         setIsEdit(false);
         dispatch(getPost(sub)).then(() => {
           dispatch(getCurrentPost(modalContext.state.post_id)).then(() => {
-            // console.log(currentPost[0]);
             // modalContext.setState(currentPost[0]);
           });
         });
@@ -257,7 +255,6 @@ export default function PostPage() {
         dispatch(asyncComment(modalContext.state.post_id));
         dispatch(getPost(sub)).then(() => {
           dispatch(getCurrentPost(modalContext.state.post_id)).then(() => {
-            // console.log(currentPost[0]);
             // modalContext.setState(currentPost[0]);
           });
         });

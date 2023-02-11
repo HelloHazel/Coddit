@@ -66,6 +66,24 @@ router.get("/post", (req, res) => {
   });
 });
 
+router.get("/search", (req, res) => {
+  var searchContent = req.query.searchContent;
+
+  var sql =
+    "select * from tb_post where post_title like '%" +
+    searchContent +
+    "%' or post_content like '%" +
+    searchContent +
+    "%' order by post_date desc";
+  var result;
+
+  db.query(sql, (err, row) => {
+    result = row.rows;
+
+    res.send(result);
+  });
+});
+
 router.get("/currpost", (req, res) => {
   var postid = req.query.postid;
 
@@ -75,8 +93,6 @@ router.get("/currpost", (req, res) => {
 
   db.query(sql, (err, row) => {
     result = row.rows;
-
-    console.log(result);
     res.send(result);
   });
 });
