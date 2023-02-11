@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Coddit/static/css/main.840c81cb.css",
+    "main.js": "/Coddit/static/js/main.776e4cc7.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/Coddit/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/logo.png": "/Coddit/static/media/logo.9c439f9f84f68278f350.png",
+    "index.html": "/Coddit/index.html",
+    "main.840c81cb.css.map": "/Coddit/static/css/main.840c81cb.css.map",
+    "main.776e4cc7.js.map": "/Coddit/static/js/main.776e4cc7.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/Coddit/static/js/787.c4e7f8f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.840c81cb.css",
+    "static/js/main.776e4cc7.js"
+  ]
+}
