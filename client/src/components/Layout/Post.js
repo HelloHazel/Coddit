@@ -88,7 +88,7 @@ export default function Post(props) {
 
   return (
     <div className="2xl:w-2/3">
-      <PostForm />
+      {user !== "" && <PostForm />}
       <div className="auto-rows-max	 	">
         {post_list.map((item, index) => (
           <div
@@ -176,6 +176,9 @@ export default function Post(props) {
                     <img src={item.post_imagepath}></img>
                   )}
                   <p>{item.post_content}</p>
+                  {item.post_link !== null && (
+                    <a href={item.post_link}>{item.post_link}</a>
+                  )}
                 </div>
                 <nav className="flex">
                   <div className="text-center float-left	flex">

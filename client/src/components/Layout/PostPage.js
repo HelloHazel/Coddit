@@ -398,7 +398,15 @@ export default function PostPage() {
                     <h2 className="text-xl mb-3">
                       {modalContext.state.post_title}
                     </h2>
+                    {modalContext.state.post_imagepath !== null && (
+                      <img src={modalContext.state.post_imagepath}></img>
+                    )}
                     <p>{modalContext.state.post_content}</p>
+                    {modalContext.state.post_link !== null && (
+                      <a href={modalContext.state.post_link}>
+                        {modalContext.state.post_link}
+                      </a>
+                    )}
                   </div>
                 )}
                 {isEdit === true && (

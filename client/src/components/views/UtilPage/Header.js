@@ -82,7 +82,7 @@ export default function Header() {
           className="flex"
           onClick={() => {
             changePost(-1);
-            // navigate("/");
+            navigate("/");
           }}
         >
           <img src={logoImg} alt="" className="w-8 h-8 mr-1" />

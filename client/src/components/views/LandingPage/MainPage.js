@@ -78,7 +78,7 @@ export default function MainPage() {
             <Sidemenu />
           </div>
           <div
-            className=" bg-reddit_gray px-6 flex-auto 2xl:flex items-center justify-center	  
+            className=" bg-reddit_gray px-6 flex-auto 2xl:flex items-start justify-center	  
           "
           >
             <AuthModal />

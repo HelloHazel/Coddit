@@ -13,7 +13,7 @@ export default function PostForm() {
     <div className="bg-reddit_gray pt-4 text-white-400 2xl:place-content-center ">
       <div className="border border-gray-300 p-2 rounded-md flex bg-white">
         <div className="rounded-full bg-gray-600 overflow-hidden w-10 h-10">
-          <img src={Avatar} alt="" style={{ filter: "invert(100%)" }} />
+          <img src={Avatar} alt="" className="invert-[1]" />
         </div>
         <form
           action=""
