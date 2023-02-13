@@ -1,10 +1,5 @@
-![coddit.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b760057a-3c3b-4ffc-8669-e7eda32a1671/coddit.png)
+![coddit](https://user-images.githubusercontent.com/94662639/218488892-75a327cf-311a-4979-bab6-05c653968e04.png)
 
-## 관련 링크
-
-Github
-
-[GitHub - HelloHazel/Reddit-Clone](https://github.com/HelloHazel/Reddit-Clone)
 
 ## 프로젝트 소개
 
@@ -79,25 +74,30 @@ Github
 
 ### 메인 페이지
 
-![메인페이지_1.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bd981df0-200b-4819-9002-6b52bbb536be/%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80_1.gif)
+![메인페이지_1](https://user-images.githubusercontent.com/94662639/218489049-dac4ceed-35ee-47ea-9adb-942719820533.gif)
+
 
 - 최초 접속 시 등록되어있는 모든 포스트를 출력하는 페이지가 보여진다.
 
-![메인페이지_2.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/dac445d9-316a-4bd4-8af4-f053a56fcf9a/%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80_2.gif)
+![메인페이지_2](https://user-images.githubusercontent.com/94662639/218489068-50c8e6ab-5fc8-4290-b70a-364ca33bccfa.gif)
+
 
 - react-pro-sidebar를 활용해 사이드 메뉴를 구현하였으며, 토픽을 클릭 시 해당 토픽의 포스트들만 출력한다.
 
-![메인페이지_3.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/b12b1842-a8b0-409c-9220-8a908b7aa223/%EB%A9%94%EC%9D%B8%ED%8E%98%EC%9D%B4%EC%A7%80_3.gif)
+![메인페이지_3](https://user-images.githubusercontent.com/94662639/218489081-c97e0b39-fa67-4d6f-9bbd-7e38c12695c8.gif)
+
 
 - 검색 기능을 통해 사용자가 검색한 키워드에 해당하는 포스트들만 출력한다.
 
 ### 포스트 작성 페이지
 
-![포스트 작성_4.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/09bbd738-fe67-4b21-a80b-89ab11492fee/%ED%8F%AC%EC%8A%A4%ED%8A%B8_%EC%9E%91%EC%84%B1_4.gif)
+![포스트 작성_4](https://user-images.githubusercontent.com/94662639/218489245-a571c1bc-1115-41fb-993d-6eaecb0a5160.gif)
+
 
 - 로그인한 유저에게만 포스트 작성 폼이 보여진다.
 
-![포스트 작성_5.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2973a1ef-d1d2-48e5-bbb9-816db4dcb19a/%ED%8F%AC%EC%8A%A4%ED%8A%B8_%EC%9E%91%EC%84%B1_5.gif)
+![포스트 작성_5](https://user-images.githubusercontent.com/94662639/218489255-27545295-8430-4789-af72-4ea509f84f70.gif)
+
 
 - Creat Post 폼 클릭 시 포스트 작성 페이지로 라우팅 된다.
 - 포스트 제목과 내용/이미지/링크를 입력할 수 있다.
@@ -105,18 +105,19 @@ Github
 
 ### 포스트 상세 페이지
 
-![포스트 작성_6.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/cec94578-de12-429e-ac0b-13c0bb0ce40e/%ED%8F%AC%EC%8A%A4%ED%8A%B8_%EC%9E%91%EC%84%B1_6.gif)
+![포스트 작성_6](https://user-images.githubusercontent.com/94662639/218489269-cf10d58f-0498-48f0-a797-4eeffcbd0ce5.gif)
+
 
 - 메인 페이지에서 포스트를 클릭할 시 포스트 상세 페이지로 넘어가며 본인이 작성한 게시글일 경우 Edit 버튼과 Delete 버튼이 보여진다.
 - Edit 버튼을 클릭하면 본인이 작성한 포스트의 제목과 내용을 수정할 수 있으며  Delete 버튼을 클릭 시 해당 포스트는 영구 삭제된다.
 
-![포스트 작성_7.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/f1e96a3d-38ab-438e-823f-8289acf724b9/%ED%8F%AC%EC%8A%A4%ED%8A%B8_%EC%9E%91%EC%84%B1_7.gif)
+![포스트 작성_7](https://user-images.githubusercontent.com/94662639/218489286-9bce6316-081e-4b74-bbf0-97e102754014.gif)
 
 - 댓글 작성과 포스트와 마찬가지로 작성한 유저의 경우 본인이 작성한 댓글을 수정/삭제 할 수 있다.
 
 ### 투표 기능
 
-![투표_8.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a80cb108-1aa4-4a8e-aa82-0468d08447c0/%ED%88%AC%ED%91%9C_8.gif)
+![투표_8](https://user-images.githubusercontent.com/94662639/218489300-719ff7c8-933d-451f-85db-50af9fb1ecfb.gif)
 
 - 포스트와 댓글에 좋아요 혹은 싫어요를 통해 투표할 수 있다.
 - 중복 투표 방지를 위해 한 유저당 하나의 투표만 선택할 수 있다.
