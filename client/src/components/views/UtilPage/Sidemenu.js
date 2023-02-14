@@ -23,6 +23,7 @@ export default function Sidemenu() {
   const changePost = (subid) => {
     dispatch(getPost(subid));
     dispatch(currentSub.actions.setCurrentSub(subid));
+    window.scrollTo(0, 0);
   };
 
   return (

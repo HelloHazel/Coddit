@@ -1,34 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Post from "../../Layout/Post";
-// import styled from "styled-components";
-import PostForm from "../../Layout/PostForm";
 import "../../../index.css";
 import Header from "../UtilPage/Header";
 import Sidemenu from "../UtilPage/Sidemenu";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import AuthModal from "../UtilPage/AuthModal";
 import AuthModalContext from "../UtilPage/AuthModalContext";
 import PostPage from "../../Layout/PostPage";
 import PostPageModalContext from "../../Layout/PostPageModalContext";
-import { ChakraProvider, Container } from "@chakra-ui/react";
-import axios from "axios";
-import UserContext from "../../UserContext";
-import Comment from "../../Layout/Comment";
-import CommentModal from "../../Layout/CommentModal";
 import { useCookies } from "react-cookie";
-import { userSlice } from "../../../store/store";
-import { useDispatch } from "react-redux";
 import SideMenutoggle from "../../Layout/SideMenutoggle";
 
 export default function MainPage() {
-  //<POST></POST> 의 어디가 문제인지 알 수 없어서 여기에 명시
-  //Warning:validateDOMNesting(...): <body> cannot appear as a child of <div></div> 이 에러 찾아서 해결해보기~
   const [showAuthModal, setShowModal] = useState(false);
   const [showPostModal, setShowPostModal] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["userName"]);
   const [postState, setPostState] = useState({});
-
-  const [navActive, setNavActive] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [scrollActive, setScrollActive] = useState(false);
 
@@ -92,12 +78,3 @@ export default function MainPage() {
     </AuthModalContext.Provider>
   );
 }
-
-// const Container = styled.div`
-//   min-height: 100vh;
-//   padding: 100px 0;
-//   display: grid;
-//   justify-content: center;
-//   background: #dbe0e6;
-//   box-sizing: border-box;
-// `;

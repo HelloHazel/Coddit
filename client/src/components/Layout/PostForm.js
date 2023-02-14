@@ -1,14 +1,15 @@
-import { PlusIcon } from "@heroicons/react/24/outline";
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import Avatar from "../../img/avatar.png";
-import PostFormModalContext from "../views/UtilPage/PostFormModalContext";
 
 export default function PostForm() {
   const navigate = useNavigate();
+
   const navigateCreatePost = () => {
     navigate("/createPost");
   };
+
   return (
     <div className="bg-reddit_gray pt-4 text-white-400 2xl:place-content-center ">
       <div className="border border-gray-300 p-2 rounded-md flex bg-white">
@@ -27,6 +28,10 @@ export default function PostForm() {
             onClick={navigateCreatePost}
           />
         </form>
+        <PlusIcon
+          className="h-5 w-5 mt-2 text-gray-500 hover:text-gray-600 cursor-pointer"
+          onClick={navigateCreatePost}
+        />
       </div>
     </div>
   );

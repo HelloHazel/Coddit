@@ -1,9 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPost, getSearchPost } from "../../../store/store";
-// import { Link } from "react-router-dom";
-import logoImg from "../../../img/logo.png";
-import title from "../../../img/titleLogo.png";
 import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
@@ -12,77 +9,69 @@ import {
   MagnifyingGlassIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
-import Avatar from "../../../img/avatar.png";
 import Button from "../../Layout/Button";
-import { useState, useContext } from "react";
-import AuthModalContext from "./AuthModalContext";
 import { userSlice, currentSub } from "../../../store/store";
 import { useNavigate } from "react-router-dom";
+import AuthModalContext from "./AuthModalContext";
+import logoImg from "../../../img/logo.png";
+import title from "../../../img/titleLogo.png";
+import Avatar from "../../../img/avatar.png";
+import SideMenutoggle from "../../Layout/SideMenutoggle";
 
 export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside, true);
-  }, []);
-
+  const [searchContent, setSearchContent] = useState("");
   const refOne = useRef(null);
-
-  const [search_content, setSearch] = useState("");
-
-  const handleClickOutside = (e) => {
-    if (!refOne.current.contains(e.target)) {
-      setUserDropdownVisibilityClass("hidden");
-    }
-  };
-
+  const user = useSelector((state) => state.userSlice.userName);
+  const authModal = useContext(AuthModalContext);
   const [userDropdownVisibilityClass, setUserDropdownVisibilityClass] =
     useState("hidden");
 
-  function toggleUserDropdown() {
-    if (userDropdownVisibilityClass === "hidden") {
-      setUserDropdownVisibilityClass("block");
-    } else {
-      setUserDropdownVisibilityClass("hidden");
-    }
-  }
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+    return () =>
+      document.removeEventListener("click", handleClickOutside, true);
+  }, []);
 
-  const authModal = useContext(AuthModalContext);
+  const handleClickOutside = (e) => {
+    if (!refOne.current.contains(e.target))
+      setUserDropdownVisibilityClass("hidden");
+  };
+
+  function toggleUserDropdown() {
+    setUserDropdownVisibilityClass(
+      userDropdownVisibilityClass === "hidden" ? "block" : "hidden"
+    );
+  }
 
   const changePost = (subid) => {
     dispatch(getPost(subid));
     dispatch(currentSub.actions.setCurrentSub(subid));
   };
 
-  // const user = useContext(UserContext);
-  const user = useSelector((state) => state.userSlice.userName);
-
-  function logout(e) {
+  function logout() {
     authModal.removeCook("userName");
     dispatch(userSlice.actions.LogoutUser(user));
     navigate("/");
   }
 
-  function SearchContent() {
-    dispatch(getSearchPost(search_content));
-    setSearch("");
-  }
-
   const activeEnter = (e) => {
     if (e.key === "Enter") {
-      SearchContent();
+      dispatch(getSearchPost(searchContent));
+      setSearchContent("");
     }
   };
 
   return (
     <header className="w-full bg-white p-2">
-      <div className="mx-4 flex relative ">
+      <div className="mx-4 flex relative">
         <button
           className="flex"
           onClick={() => {
             changePost(-1);
             navigate("/");
+            window.scrollTo(0, 0);
           }}
         >
           <img src={logoImg} alt="" className="w-8 h-8 mr-1" />
@@ -90,31 +79,29 @@ export default function Header() {
         </button>
 
         <Bars3Icon
-          className={"w-6 h-6 text-gray-400 my-1 block md:hidden"}
-          ref={refOne}
-        ></Bars3Icon>
-        {/* <form
-          action=""
-          className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow"
-        > */}
+          className="w-6 h-6 text-gray-400 my-1 block md:hidden"
+          onClick={() => SideMenutoggle.setShow()}
+        />
+
         <div className="bg-reddit_gray-brighter px-3 flex rounded-md border border-reddit_gray-700 mx-4 flex-grow">
           <MagnifyingGlassIcon
             className="text-gray-300 h-6 w-6 mt-1"
-            onClick={() => SearchContent()}
+            onClick={() => {
+              dispatch(getSearchPost(searchContent));
+              setSearchContent("");
+            }}
           />
           <input
-            value={search_content}
+            value={searchContent}
             type="text"
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => activeEnter(e)}
-            className="bg-reddit_gray-brighter text-sm p-1 pl-2 pr-0 block focus:outline-none text-black relative  "
+            onChange={(e) => setSearchContent(e.target.value)}
+            onKeyDown={activeEnter}
+            className="bg-reddit_gray-brighter text-sm p-1 pl-2 pr-0 block focus:outline-none text-black relative"
             placeholder="Search Reddit"
           />
         </div>
-        {/* </form> */}
 
         <div className="mx-2 hidden sm:block">
-          {/* 로그인버튼 */}
           {user === "" && (
             <Button
               outline

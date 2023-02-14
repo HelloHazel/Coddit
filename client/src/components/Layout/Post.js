@@ -1,14 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  asyncVoteSum,
   getPost,
   currentSub,
   asyncComment,
   asyncMyVotePost,
   getCurrentPost,
 } from "../../store/store";
-import PostContent from "../views/UtilPage/PostContent";
 import TimeAgo from "timeago-react";
 import PostForm from "./PostForm";
 import {
@@ -16,7 +14,6 @@ import {
   HandThumbDownIcon,
   HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
-import CommentModal from "./CommentModal";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PostPageModalContext from "./PostPageModalContext";
@@ -24,79 +21,60 @@ import PostPageModalContext from "./PostPageModalContext";
 export default function Post(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const postModal = useContext(PostPageModalContext);
-
   const sub = useSelector((state) => state.currentSub.currentSub);
-
   const user = useSelector((state) => state.userSlice.userName);
-
   const sub_list = useSelector((state) => state.subSlice.list);
-
   const post_list = useSelector((state) => state.postSlice.list);
-
   const myvotepost = useSelector((state) => state.myVotePost.list);
 
   useEffect(() => {
     dispatch(getPost(-1));
     dispatch(currentSub.actions.setCurrentSub(-1));
-  }, []);
+  }, [dispatch]);
 
-  function votePost(vote_kind, post_id, comment_id, username) {
-    if (username == "" || username == null || username == undefined) {
+  const votePost = (vote_kind, post_id, comment_id, username) => {
+    if (!username) {
       return;
     }
 
-    let body = {
-      vote_kind: vote_kind,
-      post_id: post_id,
-      comment_id: comment_id,
-      username: username,
+    const body = {
+      vote_kind,
+      post_id,
+      comment_id,
+      username,
     };
 
     axios.post("/api/vote", body).then((res) => {
       if (res.data.result === "ok") {
-        // dispatch(asyncMyVotePost(user)).then(() => {
-        //   dispatch(getPost(sub));
-        // });
         dispatch(asyncMyVotePost(user));
         dispatch(getPost(sub));
       }
     });
-  }
+  };
 
   const isVote = (post_id, user_name) => {
-    if (user_name === "" || user_name === null || user_name === undefined) {
+    if (!user_name) {
       return 0;
-    } else {
-      if (
-        myvotepost === null ||
-        myvotepost === undefined ||
-        myvotepost.length <= 0
-      ) {
-        return 0;
-      } else {
-        for (var i = 0; i < myvotepost.length; i++) {
-          if (myvotepost[i].post_id === post_id) {
-            return myvotepost[i].vote_kind;
-          }
-        }
-      }
     }
-    return 0;
+    if (!myvotepost || !myvotepost.length) {
+      return 0;
+    }
+    const vote = myvotepost.find((votePost) => votePost.post_id === post_id);
+    return vote ? vote.vote_kind : 0;
   };
 
   return (
     <div className="2xl:w-2/3">
-      {user !== "" && <PostForm />}
-      <div className="auto-rows-max	 	">
+      {user && <PostForm />}
+      <div className="auto-rows-max">
         {post_list.map((item, index) => (
           <div
-            className="border border-gray-300 bg-white my-3 rounded-md flex  "
+            className="border border-gray-300 bg-white my-3 rounded-md flex"
             key={index}
           >
             {isVote(item.post_id, user) === 0 ? (
-              <div className="float-left bg-gray-100 p-2 text-center space-y-1  ">
+              <div className="float-left bg-gray-100 p-2 text-center space-y-1">
                 <HandThumbUpIcon
                   className="h-4"
                   onClick={() => {
@@ -112,9 +90,9 @@ export default function Post(props) {
                 />
               </div>
             ) : isVote(item.post_id, user) === 1 ? (
-              <div className="float-left bg-gray-100 p-2 text-center space-y-1  ">
+              <div className="float-left bg-gray-100 p-2 text-center space-y-1">
                 <HandThumbUpIcon
-                  className="h-4 fill-orange-400 "
+                  className="h-4 fill-orange-400"
                   onClick={() => {
                     votePost(1, item.post_id, null, user);
                   }}
@@ -189,9 +167,6 @@ export default function Post(props) {
                       <p className=" text-sm">comments</p>
                     </button>
                   </div>
-                  {/* <div className="text-center float-left text-sm text-gray-400 mt-3.5 flex	">
-                  <p>1</p> Comments
-                </div> */}
                 </nav>
               </div>
             </div>

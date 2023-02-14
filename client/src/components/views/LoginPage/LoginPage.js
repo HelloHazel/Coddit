@@ -1,43 +1,30 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [Email, setEmail] = useState("");
-  const [Name, setName] = useState("");
-  const [Password, setPassword] = useState("");
+  const [formData, setFormData] = useState({ name: "", password: "" });
 
-
-  const onNameHandler = (event) => {
-    setName(event.currentTarget.value);
-  };
-  const onPasswordHandler = (event) => {
-    setPassword(event.currentTarget.value);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const onSubmitHandler = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Name", Name);
-    console.log("Password", Password);
+    const { name, password } = formData;
+    const res = await axios.post("/api/login", { name, password });
 
-    let body = {
-      name: Name,
-      password: Password,
-    };
-    // dispatch(loginUser(body));
-    axios.post("/api/login", body).then((res) => {
-      if (res.data.result === "loginError") {
-        //로그인 실패 시 디자인 수정
-        alert("잘못된 정보 입력");
-      } else if (res.data.result === "ok") {
-        navigate("/");
-      }
+    if (res.data.result === "loginError") {
+      alert("잘못된 정보 입력");
+    } else if (res.data.result === "ok") {
+      navigate("/");
+    }
 
-      console.log(res.data);
-    });
+    console.log(res.data);
   };
 
   return (
@@ -52,14 +39,24 @@ export default function LoginPage() {
     >
       <form
         style={{ display: "flex", flexDirection: "column" }}
-        onSubmit={onSubmitHandler}
+        onSubmit={handleSubmit}
       >
         <label>Name</label>
-        <input type="name" value={Name} onChange={onNameHandler} />
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
+        />
         <label>Password</label>
-        <input type="password" value={Password} onChange={onPasswordHandler} />
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleInputChange}
+        />
         <br />
-        <button>Login</button>
+        <button type="submit">Login</button>
       </form>
     </div>
   );

@@ -254,9 +254,7 @@ export default function PostPage() {
         dispatch(asyncMyVoteComment(user));
         dispatch(asyncComment(modalContext.state.post_id));
         dispatch(getPost(sub)).then(() => {
-          dispatch(getCurrentPost(modalContext.state.post_id)).then(() => {
-            // modalContext.setState(currentPost[0]);
-          });
+          dispatch(getCurrentPost(modalContext.state.post_id)).then(() => {});
         });
       }
     });
@@ -303,10 +301,6 @@ export default function PostPage() {
     }
     return 0;
   };
-
-  // useEffect(() => {
-  //   dispatch(asyncComment(state.post_id));
-  // }, []);
 
   return (
     <div
@@ -455,18 +449,12 @@ export default function PostPage() {
                       rows={5}
                       placeholder="   What are your thoughts?"
                       onChange={commentChange}
-                      // onKeyUp={(e) => {
-                      //   e.target.value.length > 0
-                      //     ? SetIsValid(true)
-                      //     : SetIsValid(false);
-                      // }}
                       value={comment}
                     ></textarea>
                   </form>
                   <div className="text-right">
                     <Button
                       className="h-5 mt-2 bg-gray-500 text-gray-300"
-                      // disabled={isValid ? false : true}
                       onClick={(e) => {
                         setComment("");
                         writeComment();
@@ -534,75 +522,77 @@ export default function PostPage() {
                         </div>
                       </div>
                     )}
-                    {isVoteComment(comment.comment_id, user) === 0 ? (
-                      <div className="my-3 ">
-                        <HandThumbUpIcon
-                          className="h-4"
-                          onClick={() => {
-                            votePost(1, null, comment.comment_id, user);
-                          }}
-                        />
-                        <p>{comment.vote_sum}</p>
-                        <HandThumbDownIcon
-                          className="h-4"
-                          onClick={() => {
-                            votePost(-1, null, comment.comment_id, user);
-                          }}
-                        />
-                      </div>
-                    ) : isVoteComment(comment.comment_id, user) === 1 ? (
-                      <div className="my-3 ">
-                        <HandThumbUpIcon
-                          className="h-4 fill-orange-400 "
-                          onClick={() => {
-                            votePost(1, null, comment.comment_id, user);
-                          }}
-                        />
-                        <p>{comment.vote_sum}</p>
-                        <HandThumbDownIcon
-                          className="h-4"
-                          onClick={() => {
-                            votePost(-1, null, comment.comment_id, user);
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="my-3 ">
-                        <HandThumbUpIcon
-                          className="h-4 "
-                          onClick={() => {
-                            votePost(1, null, comment.comment_id, user);
-                          }}
-                        />
-                        <p>{comment.vote_sum}</p>
-                        <HandThumbDownIcon
-                          className="h-4 fill-blue-300"
-                          onClick={() => {
-                            votePost(-1, null, comment.comment_id, user);
-                          }}
-                        />
-                      </div>
-                    )}
-                    <div>
-                      {user === comment.user_name && (
-                        <button
-                          onClick={() => {
-                            setEditComment(comment.comment_content);
-                            changeE();
-                          }}
-                        >
-                          Edit
-                        </button>
+                    <div className="flex space-x-2  text-gray-400">
+                      {isVoteComment(comment.comment_id, user) === 0 ? (
+                        <div className="my-3 flex space-x-1 ">
+                          <HandThumbUpIcon
+                            className="h-4 mt-1"
+                            onClick={() => {
+                              votePost(1, null, comment.comment_id, user);
+                            }}
+                          />
+                          <p>{comment.vote_sum}</p>
+                          <HandThumbDownIcon
+                            className="h-4 mt-1"
+                            onClick={() => {
+                              votePost(-1, null, comment.comment_id, user);
+                            }}
+                          />
+                        </div>
+                      ) : isVoteComment(comment.comment_id, user) === 1 ? (
+                        <div className="  my-3 flex space-x-1">
+                          <HandThumbUpIcon
+                            className="h-4 mt-1 fill-orange-400 "
+                            onClick={() => {
+                              votePost(1, null, comment.comment_id, user);
+                            }}
+                          />
+                          <p>{comment.vote_sum}</p>
+                          <HandThumbDownIcon
+                            className="h-4 mt-1"
+                            onClick={() => {
+                              votePost(-1, null, comment.comment_id, user);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="my-3 flex space-x-1 ">
+                          <HandThumbUpIcon
+                            className="h-4 mt-1 "
+                            onClick={() => {
+                              votePost(1, null, comment.comment_id, user);
+                            }}
+                          />
+                          <p>{comment.vote_sum}</p>
+                          <HandThumbDownIcon
+                            className="h-4 mt-1 fill-blue-300"
+                            onClick={() => {
+                              votePost(-1, null, comment.comment_id, user);
+                            }}
+                          />
+                        </div>
                       )}
-                      {user === comment.user_name && (
-                        <button
-                          onClick={() => {
-                            deleteComment(comment.comment_id);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      )}
+                      <div className="space-x-2 mt-3">
+                        {user === comment.user_name && (
+                          <button
+                            onClick={() => {
+                              setEditComment(comment.comment_content);
+                              changeE();
+                            }}
+                          >
+                            Edit
+                          </button>
+                        )}
+                        {user === comment.user_name && (
+                          <button
+                            onClick={() => {
+                              deleteComment(comment.comment_id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
