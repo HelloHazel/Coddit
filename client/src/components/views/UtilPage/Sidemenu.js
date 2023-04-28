@@ -54,43 +54,4 @@ export default function Sidemenu() {
       </div>
     </div>
   );
-  //   const dispatch = useDispatch();
-  //   const topic_list = useSelector((state) => state.topicSlice.list);
-  //   const sub_list = useSelector((state) => state.subSlice.list);
-  //   useEffect(() => {
-  //     dispatch(asyncTopic());
-  //     dispatch(asyncSub());
-  //   }, []);
-  //   return (
-  //     <div className={styles.sidebar}>
-  //       <div className="sidebarWrapper">
-  //         <div className={styles.sidebarMenu}>
-  //           <div>
-  //             <i className="fa-regular fa-circle-arrow-up-right"></i>
-  //             <ul>
-  //               FEEDS
-  //               <li className="sidebarListItem">
-  //                 <i className="fa-solid fa-house"></i>Home
-  //               </li>
-  //               <li className="sidebarListItem">
-  //                 <span className="material-symbols-outlined">outbound</span>
-  //                 Popular
-  //               </li>
-  //             </ul>
-  //           </div>
-  //           <ul>
-  //             RECENT
-  //             <li>r/running</li>
-  //           </ul>
-  //           <ul>TOPICS</ul>
-  //           {topic_list.map((item, index) => (
-  //             <div key={index}>{item.topic_name}</div>
-  //           ))}
-  //           {sub_list.map((item, index) => (
-  //             <div key={index}>{item.sub_name}</div>
-  //           ))}
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
 }

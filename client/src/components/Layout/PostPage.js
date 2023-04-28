@@ -80,11 +80,7 @@ export default function PostPage() {
 
   const [cp, setCP] = useState(currentPost);
 
-  // useEffect(() => {
-  //   modalContext.setState(currentPost[0]);
-  // }, [currentPost]);
 
-  // 댓글 기능
   const [comment, setComment] = useState("");
   const comment_list = useSelector((state) => state.commentSlice.list);
   const [edit_comment, setEditComment] = useState("");
